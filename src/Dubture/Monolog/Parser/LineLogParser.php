@@ -11,16 +11,26 @@
 
 namespace Dubture\Monolog\Parser;
 
+/**
+ * Class LineLogParser
+ * @package Dubture\Monolog\Parser
+ */
 class LineLogParser implements LogParserInterface
 {
+    /**
+     * @var string
+     */
     protected $pattern = '/\[(?P<date>.*)\] (?P<logger>\w+).(?P<level>\w+): (?P<message>[^ ]+) (?P<context>[^ ]+) (?P<extra>[^ ]+)/';
 
+
     /**
-     * {@inheritdoc}
-     */
-    public function parse($log)
+     * @param string $log
+     * @param int    $days (number last day of logs out)
+     *
+     * @return array
+     */public function parse($log, $days = 1)
     {
-        if( !is_string($log) || strlen($log) === 0) {
+        if (!is_string($log) || strlen($log) === 0) {
             return array();
         }
 
@@ -30,13 +40,21 @@ class LineLogParser implements LogParserInterface
             return array();
         }
 
-        return array(
-            'date' => \DateTime::createFromFormat('Y-m-d H:i:s', $data['date']),
-            'logger' => $data['logger'],
-            'level' => $data['level'],
+        $array = array(
+            'date'    => \DateTime::createFromFormat('Y-m-d H:i:s', $data['date']),
+            'logger'  => $data['logger'],
+            'level'   => $data['level'],
             'message' => $data['message'],
             'context' => json_decode($data['context'], true),
-            'extra' => json_decode($data['extra'], true)
+            'extra'   => json_decode($data['extra'], true)
         );
+
+        $d2 = new \DateTime('now');
+
+        if ($array['date']->diff($d2)->days < $days) {
+            return $array;
+        } else {
+            return array();
+        }
     }
 }

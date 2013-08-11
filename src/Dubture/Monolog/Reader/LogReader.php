@@ -14,7 +14,8 @@ namespace Dubture\Monolog\Reader;
 use Dubture\Monolog\Reader\AbstractReader;
 
 /**
- * @author Robert Gruendler <r.gruendler@gmail.com>
+ * Class LogReader
+ * @package Dubture\Monolog\Reader
  */
 class LogReader extends AbstractReader implements \Iterator, \ArrayAccess, \Countable
 {
@@ -33,10 +34,12 @@ class LogReader extends AbstractReader implements \Iterator, \ArrayAccess, \Coun
      */
     protected $parser;
 
+
     /**
-     * @param string $file
+     * @param $file
+     * @param $days
      */
-    public function __construct($file)
+    public function __construct($file, $days)
     {
         $this->file = new \SplFileObject($file, 'r');
         $i = 0;
@@ -47,7 +50,7 @@ class LogReader extends AbstractReader implements \Iterator, \ArrayAccess, \Coun
         }
 
         $this->lineCount = $i;
-        $this->parser = $this->getDefaultParser();
+        $this->parser = $this->getDefaultParser($days);
     }
 
     /**
