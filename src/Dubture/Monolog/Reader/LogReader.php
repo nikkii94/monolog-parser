@@ -36,13 +36,14 @@ class LogReader extends AbstractReader implements \Iterator, \ArrayAccess, \Coun
 
 
     /**
-     * @param $file
-     * @param $days
+     * @param        $file
+     * @param int    $days
+     * @param string $pattern
      */
-    public function __construct($file, $days)
+    public function __construct($file, $days = 1, $pattern = 'default')
     {
         $this->file = new \SplFileObject($file, 'r');
-        $i = 0;
+        $i          = 0;
         while (!$this->file->eof()) {
             $this->file->current();
             $this->file->next();
@@ -50,7 +51,7 @@ class LogReader extends AbstractReader implements \Iterator, \ArrayAccess, \Coun
         }
 
         $this->lineCount = $i;
-        $this->parser = $this->getDefaultParser($days);
+        $this->parser    = $this->getDefaultParser($days, $pattern);
     }
 
     /**

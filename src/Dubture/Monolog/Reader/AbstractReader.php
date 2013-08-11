@@ -19,12 +19,15 @@ use Dubture\Monolog\Parser\LineLogParser;
  */
 class AbstractReader
 {
+
     /**
      * @param $days
+     * @param $pattern
      *
      * @return LineLogParser
-     */protected function getDefaultParser($days)
+     */
+    protected function getDefaultParser($days, $pattern)
     {
-        return new LineLogParser($days);
+        return new LineLogParser($days, $pattern);
     }
 }

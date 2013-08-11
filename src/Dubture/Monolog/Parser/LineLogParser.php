@@ -20,21 +20,26 @@ class LineLogParser implements LogParserInterface
     /**
      * @var string
      */
-    protected $pattern = '/\[(?P<date>.*)\] (?P<logger>\w+).(?P<level>\w+): (?P<message>[^ ]+) (?P<context>[^ ]+) (?P<extra>[^ ]+)/';
+    protected $pattern = array(
+        'default' => '/\[(?P<date>.*)\] (?P<logger>\w+).(?P<level>\w+): (?P<message>[^ ]+) (?P<context>[^ ]+) (?P<extra>[^ ]+)/',
+        'error'   => '/\[(?P<date>.*)\] (?P<logger>\w+).(?P<level>\w+): (?P<message>(.*)+) (?P<context>[^ ]+) (?P<extra>[^ ]+)/'
+    );
 
 
     /**
      * @param string $log
-     * @param int    $days (number last day of logs out)
+     * @param int    $days
+     * @param string $pattern
      *
      * @return array
-     */public function parse($log, $days = 1)
+     */
+    public function parse($log, $days = 1, $pattern = 'default')
     {
         if (!is_string($log) || strlen($log) === 0) {
             return array();
         }
 
-        preg_match($this->pattern, $log, $data);
+        preg_match($this->pattern[$pattern], $log, $data);
 
         if (!isset($data['date'])) {
             return array();
