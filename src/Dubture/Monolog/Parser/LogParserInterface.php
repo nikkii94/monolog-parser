@@ -18,7 +18,10 @@ namespace Dubture\Monolog\Parser;
 interface LogParserInterface
 {
     /**
-     * @param string $log
-     */
-    function parse($log);
+     * @param $log
+     * @param $days
+     * @param $pattern
+     *
+     * @return mixed
+     */function parse($log, $days, $pattern);
 }

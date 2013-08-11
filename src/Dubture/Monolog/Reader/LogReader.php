@@ -34,6 +34,9 @@ class LogReader extends AbstractReader implements \Iterator, \ArrayAccess, \Coun
      */
     protected $parser;
 
+    public $days;
+    public $pattern;
+
 
     /**
      * @param        $file
@@ -49,6 +52,9 @@ class LogReader extends AbstractReader implements \Iterator, \ArrayAccess, \Coun
             $this->file->next();
             $i++;
         }
+
+        $this->days = $days;
+        $this->pattern = $pattern;
 
         $this->lineCount = $i;
         $this->parser    = $this->getDefaultParser($days, $pattern);
@@ -113,7 +119,7 @@ class LogReader extends AbstractReader implements \Iterator, \ArrayAccess, \Coun
      */
     public function current()
     {
-        return $this->parser->parse($this->file->current());
+        return $this->parser->parse($this->file->current(), $this->days, $this->pattern);
     }
 
     /**
