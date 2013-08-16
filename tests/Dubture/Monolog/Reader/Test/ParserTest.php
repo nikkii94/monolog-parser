@@ -18,16 +18,84 @@ use Dubture\Monolog\Parser\LineLogParser;
  */
 class ParserTest extends \PHPUnit_Framework_TestCase
 {
-    public function testLineFormatter()
+    public function logLineProvider()
     {
-        $parser = new LineLogParser();
-        $log = $parser->parse('[2013-03-16 14:19:51] test.INFO: foobar {"foo":"bar"} []');
+        return array(
+            'simple' => array(
+                'aha',
+                'DEBUG',
+                'foobar',
+                array(),
+                array(),
+                '[%s] aha.DEBUG: foobar [] []'
+            ),
+            'default' => array(
+                'test',
+                'INFO',
+                'foobar',
+                array('foo' => 'bar'),
+                array(),
+                '[%s] test.INFO: foobar {"foo":"bar"} []'
+            ),
+            'multi_context' => array(
+                'context',
+                'INFO',
+                'multicontext',
+                array(array('foo' => 'bar'), array('bat' => 'baz')),
+                array(),
+                '[%s] context.INFO: multicontext [{"foo":"bar"},{"bat":"baz"}] []'
+            ),
+            'multi_context_empty' => array(
+                'context',
+                'INFO',
+                'multicontext',
+                array(array('foo' => 'bar'), array()),
+                array(),
+                '[%s] context.INFO: multicontext [{"foo":"bar"},[]] []'
+            ),
+            'multi_context_spaces' => array(
+                'context',
+                'INFO',
+                'multicontext',
+                array(array('foo' => 'bar', 'stuff' => 'and things'), array('bat' => 'baz')),
+                array(),
+                '[%s] context.INFO: multicontext [{"foo":"bar","stuff":"and things"},{"bat":"baz"}] []'
+            ),
+            'multi_context_message_spaces' => array(
+                'context',
+                'INFO',
+                'multicontext with spaces',
+                array(array('foo' => 'bar', 'stuff' => 'and things'), array('bat' => 'baz')),
+                array(),
+                '[%s] context.INFO: multicontext with spaces [{"foo":"bar","stuff":"and things"},{"bat":"baz"}] []'
+            ),
+            'extra_context' => array(
+                'extra',
+                'INFO',
+                'context and extra',
+                array(array('foo' => 'bar', 'stuff' => 'and things'), array('bat' => 'baz')),
+                array(array('weebl' => 'bob'), array('lobob' => 'lo')),
+                '[%s] extra.INFO: context and extra [{"foo":"bar","stuff":"and things"},{"bat":"baz"}] [{"weebl":"bob"},{"lobob":"lo"}]'
+            ),
+        );
+    }
+
+    /**
+     * @dataProvider logLineProvider
+     */
+    public function testLineFormatter($logger, $level, $message, $context, $extra, $line)
+    {
+        $now     = new \DateTime();
+        $parser  = new LineLogParser();
+        $logLine = sprintf($line, $now->format('Y-m-d H:i:s'));
+        
+        $log     = $parser->parse($logLine);
 
         $this->assertInstanceOf('\DateTime', $log['date']);
-        $this->assertEquals('test', $log['logger']);
-        $this->assertEquals('INFO', $log['level']);
-        $this->assertEquals('foobar', $log['message']);
-        $this->assertArrayHasKey('foo', $log['context']);
-
+        $this->assertEquals($logger, $log['logger']);
+        $this->assertEquals($level, $log['level']);
+        $this->assertEquals($message, $log['message']);
+        $this->assertEquals($context, $log['context']);
+        $this->assertEquals($extra, $log['extra']);
     }
 }

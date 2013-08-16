@@ -41,6 +41,57 @@ class LogReaderTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals('foobar', $log['message']);
         $this->assertArrayNotHasKey('foo', $log['context']);
 
+        $log = $reader[2];
+
+        $this->assertInstanceOf('\DateTime', $log['date']);
+        $this->assertEquals('context', $log['logger']);
+        $this->assertEquals('INFO', $log['level']);
+        $this->assertEquals('multicontext', $log['message']);
+        $this->assertArrayHasKey('foo', $log['context'][0]);
+        $this->assertArrayHasKey('bat', $log['context'][1]);
+
+        $log = $reader[3];
+
+        $this->assertInstanceOf('\DateTime', $log['date']);
+        $this->assertEquals('context', $log['logger']);
+        $this->assertEquals('INFO', $log['level']);
+        $this->assertEquals('multicontext', $log['message']);
+        $this->assertArrayHasKey('foo', $log['context'][0]);
+        $this->assertArrayHasKey('stuff', $log['context'][0]);
+        $this->assertArrayHasKey('bat', $log['context'][1]);
+
+        $log = $reader[4];
+
+        $this->assertInstanceOf('\DateTime', $log['date']);
+        $this->assertEquals('context', $log['logger']);
+        $this->assertEquals('INFO', $log['level']);
+        $this->assertEquals('multicontext with empty', $log['message']);
+        $this->assertArrayHasKey('foo', $log['context'][0]);
+        $this->assertArrayHasKey('stuff', $log['context'][0]);
+        $this->assertEmpty($log['context'][1]);
+
+        $log = $reader[5];
+
+        $this->assertInstanceOf('\DateTime', $log['date']);
+        $this->assertEquals('context', $log['logger']);
+        $this->assertEquals('INFO', $log['level']);
+        $this->assertEquals('multicontext with spaces', $log['message']);
+        $this->assertArrayHasKey('foo', $log['context'][0]);
+        $this->assertArrayHasKey('stuff', $log['context'][0]);
+        $this->assertArrayHasKey('bat', $log['context'][1]);
+
+        $log = $reader[6];
+
+        $this->assertInstanceOf('\DateTime', $log['date']);
+        $this->assertEquals('extra', $log['logger']);
+        $this->assertEquals('INFO', $log['level']);
+        $this->assertEquals('context and extra', $log['message']);
+        $this->assertArrayHasKey('foo', $log['context'][0]);
+        $this->assertArrayHasKey('stuff', $log['context'][0]);
+        $this->assertArrayHasKey('bat', $log['context'][1]);
+        $this->assertArrayHasKey('weebl', $log['extra'][0]);
+        $this->assertArrayHasKey('lobob', $log['extra'][1]);
+        
     }
 
     public function testIterator()
@@ -50,7 +101,7 @@ class LogReaderTest extends \PHPUnit_Framework_TestCase
         $lines = array();
         $keys = array();
 
-        $this->assertEquals(2, count($reader));
+        $this->assertEquals(7, count($reader));
 
         foreach ($reader as $i => $log) {
             $test = $reader[0];
@@ -58,9 +109,14 @@ class LogReaderTest extends \PHPUnit_Framework_TestCase
             $keys[] = $i;
         }
 
-        $this->assertEquals(array(0, 1), $keys);
+        $this->assertEquals(array(0, 1, 2, 3, 4, 5, 6), $keys);
         $this->assertEquals('test', $lines[0]['logger']);
         $this->assertEquals('aha', $lines[1]['logger']);
+        $this->assertEquals('context', $lines[2]['logger']);
+        $this->assertEquals('context', $lines[3]['logger']);
+        $this->assertEquals('context', $lines[4]['logger']);
+        $this->assertEquals('context', $lines[5]['logger']);
+        $this->assertEquals('extra', $lines[6]['logger']);
 
     }
 
@@ -71,7 +127,7 @@ class LogReaderTest extends \PHPUnit_Framework_TestCase
     {
         $file = __DIR__ . '/../../../../files/test.log';
         $reader = new LogReader($file);
-        $reader[5] = 'foo';
+        $reader[9] = 'foo';
 
     }
 }
