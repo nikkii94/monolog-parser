@@ -45,8 +45,10 @@ class LineLogParser implements LogParserInterface
             return array();
         }
 
+        $date = \DateTime::createFromFormat('Y-m-d H:i:s', $data['date']);
+
         $array = array(
-            'date'    => \DateTime::createFromFormat('Y-m-d H:i:s', $data['date']),
+            'date'    => $date,
             'logger'  => $data['logger'],
             'level'   => $data['level'],
             'message' => $data['message'],
@@ -54,12 +56,14 @@ class LineLogParser implements LogParserInterface
             'extra'   => json_decode($data['extra'], true)
         );
 
-        $d2 = new \DateTime('now');
+        if (isset($date) && $date instanceof \DateTime) {
+            $d2 = new \DateTime('now');
 
-        if ($array['date']->diff($d2)->days < $days) {
-            return $array;
-        } else {
-            return array();
+            if ($date->diff($d2)->days < $days) {
+                return $array;
+            } else {
+                return array();
+            }
         }
     }
 }
