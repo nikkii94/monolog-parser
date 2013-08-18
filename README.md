@@ -7,7 +7,9 @@ A simple library for parsing [monolog](https://github.com/Seldaek/monolog) logfi
 
 You can install the library using [composer]('http://getcomposer.org/) by adding  `ddtraceweb/monolog-parser` to your `composer.json`.
 
-## Usage 1 days of logs
+## Usage 
+
+* 1 days of logs
 
 ```php
     require_once 'path/to/vendor/autoload.php';
@@ -24,7 +26,9 @@ You can install the library using [composer]('http://getcomposer.org/) by adding
     $lastLine = $reader[count($reader)-1];
     echo sprintf("The last log entry was written at %s. \n", $lastLine['date']->format('Y-m-d h:i:s'));
 
-```# options unlimited days logs
+```
+
+* options unlimited days logs
 
 ```php
     require_once 'path/to/vendor/autoload.php';
@@ -43,7 +47,7 @@ You can install the library using [composer]('http://getcomposer.org/) by adding
 
 ```
 
-# options 2 days logs
+* options 2 days logs
 
 ```php
     require_once 'path/to/vendor/autoload.php';
