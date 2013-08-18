@@ -56,6 +56,10 @@ class LineLogParser implements LogParserInterface
             'extra'   => json_decode($data['extra'], true)
         );
 
+        if (0 === $days) {
+            return $array;
+        }
+
         if (isset($date) && $date instanceof \DateTime) {
             $d2 = new \DateTime('now');
 

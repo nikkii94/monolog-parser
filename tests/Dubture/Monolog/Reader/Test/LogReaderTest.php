@@ -20,12 +20,17 @@ use Dubture\Monolog\Reader\LogReader;
  */
 class LogReaderTest extends \PHPUnit_Framework_TestCase
 {
-    public function testReader()
+    private $reader;
+
+    public function setUp()
     {
         $file = __DIR__ . '/../../../../files/test.log';
-        $reader = new LogReader($file);
+        $this->reader = new LogReader($file, 0);
+    }
 
-        $log = $reader[0];
+    public function testReader()
+    {
+        $log = $this->reader[0];
 
         $this->assertInstanceOf('\DateTime', $log['date']);
         $this->assertEquals('test', $log['logger']);
@@ -33,7 +38,7 @@ class LogReaderTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals('foobar', $log['message']);
         $this->assertArrayHasKey('foo', $log['context']);
 
-        $log = $reader[1];
+        $log = $this->reader[1];
 
         $this->assertInstanceOf('\DateTime', $log['date']);
         $this->assertEquals('aha', $log['logger']);
@@ -41,7 +46,7 @@ class LogReaderTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals('foobar', $log['message']);
         $this->assertArrayNotHasKey('foo', $log['context']);
 
-        $log = $reader[2];
+        $log = $this->reader[2];
 
         $this->assertInstanceOf('\DateTime', $log['date']);
         $this->assertEquals('context', $log['logger']);
@@ -50,7 +55,7 @@ class LogReaderTest extends \PHPUnit_Framework_TestCase
         $this->assertArrayHasKey('foo', $log['context'][0]);
         $this->assertArrayHasKey('bat', $log['context'][1]);
 
-        $log = $reader[3];
+        $log = $this->reader[3];
 
         $this->assertInstanceOf('\DateTime', $log['date']);
         $this->assertEquals('context', $log['logger']);
@@ -60,7 +65,7 @@ class LogReaderTest extends \PHPUnit_Framework_TestCase
         $this->assertArrayHasKey('stuff', $log['context'][0]);
         $this->assertArrayHasKey('bat', $log['context'][1]);
 
-        $log = $reader[4];
+        $log = $this->reader[4];
 
         $this->assertInstanceOf('\DateTime', $log['date']);
         $this->assertEquals('context', $log['logger']);
@@ -70,7 +75,7 @@ class LogReaderTest extends \PHPUnit_Framework_TestCase
         $this->assertArrayHasKey('stuff', $log['context'][0]);
         $this->assertEmpty($log['context'][1]);
 
-        $log = $reader[5];
+        $log = $this->reader[5];
 
         $this->assertInstanceOf('\DateTime', $log['date']);
         $this->assertEquals('context', $log['logger']);
@@ -80,7 +85,7 @@ class LogReaderTest extends \PHPUnit_Framework_TestCase
         $this->assertArrayHasKey('stuff', $log['context'][0]);
         $this->assertArrayHasKey('bat', $log['context'][1]);
 
-        $log = $reader[6];
+        $log = $this->reader[6];
 
         $this->assertInstanceOf('\DateTime', $log['date']);
         $this->assertEquals('extra', $log['logger']);
@@ -96,15 +101,13 @@ class LogReaderTest extends \PHPUnit_Framework_TestCase
 
     public function testIterator()
     {
-        $file = __DIR__ . '/../../../../files/test.log';
-        $reader = new LogReader($file);
         $lines = array();
         $keys = array();
 
-        $this->assertEquals(7, count($reader));
+        $this->assertEquals(7, count($this->reader));
 
-        foreach ($reader as $i => $log) {
-            $test = $reader[0];
+        foreach ($this->reader as $i => $log) {
+            $test = $this->reader[0];
             $lines[] = $log;
             $keys[] = $i;
         }
@@ -125,9 +128,7 @@ class LogReaderTest extends \PHPUnit_Framework_TestCase
      */
     public function testException()
     {
-        $file = __DIR__ . '/../../../../files/test.log';
-        $reader = new LogReader($file);
-        $reader[9] = 'foo';
+        $this->reader[9] = 'foo';
 
     }
 }

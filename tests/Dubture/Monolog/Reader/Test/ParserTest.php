@@ -18,6 +18,13 @@ use Dubture\Monolog\Parser\LineLogParser;
  */
 class ParserTest extends \PHPUnit_Framework_TestCase
 {
+    private $parser;
+
+    public function setUp()
+    {
+        $this->parser  = new LineLogParser();
+    }
+
     public function logLineProvider()
     {
         return array(
@@ -80,16 +87,63 @@ class ParserTest extends \PHPUnit_Framework_TestCase
         );
     }
 
+    public function daysLineProvider()
+    {
+        return array(
+            array (
+                'yesterday',
+                '[%s] days.DEBUG: %s [] []',
+            ),
+            array (
+                '2 days ago',
+                '[%s] days.DEBUG: %s [] []',
+            ),
+            array (
+                '3 days ago',
+                '[%s] days.DEBUG: %s [] []',
+            ),
+            array (
+                '1 week ago',
+                '[%s] days.DEBUG: %s [] []',
+            ),
+            array (
+                '1 month ago',
+                '[%s] days.DEBUG: %s [] []',
+            ),
+            array (
+                '1 year ago',
+                '[%s] days.DEBUG: %s [] []',
+            ),
+        );
+    }
+
+    public function datedLineProvider()
+    {
+        $dynamic = $this->daysLineProvider();
+
+        $array = array(
+            array (
+                false,
+                '[1970-01-01 00:00:00] dates.DEBUG: epoch [] []'
+            ),
+            array (
+                false,
+                '[1955-11-05 19:00:00] dates.DEBUG: flux capacitor [] []'
+            )
+        );
+
+        return array_merge($dynamic, $array);
+    }
+
     /**
      * @dataProvider logLineProvider
      */
     public function testLineFormatter($logger, $level, $message, $context, $extra, $line)
     {
-        $now     = new \DateTime();
-        $parser  = new LineLogParser();
-        $logLine = sprintf($line, $now->format('Y-m-d H:i:s'));
-        
-        $log     = $parser->parse($logLine);
+        $now  = new \DateTime();
+        $line = sprintf($line, $now->format('Y-m-d H:i:s'));
+
+        $log  = $this->parser->parse($line);
 
         $this->assertInstanceOf('\DateTime', $log['date']);
         $this->assertEquals($logger, $log['logger']);
@@ -97,5 +151,35 @@ class ParserTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($message, $log['message']);
         $this->assertEquals($context, $log['context']);
         $this->assertEquals($extra, $log['extra']);
+    }
+
+    /**
+     * @dataProvider daysLineProvider
+     */
+    public function testDaysFilter($time, $line)
+    {
+        $now  = new \DateTime();
+        $date = new \DateTime($time);
+        $line = sprintf($line, $date->format('Y-m-d H:i:s'), $time);
+
+        $days = 1 + $date->diff($now)->days;
+        $log  = $this->parser->parse($line, $days);
+
+        $this->assertNotEmpty($log);
+    }
+
+    /**
+     * @dataProvider datedLineProvider
+     */
+    public function testZeroForDaysReturnsAllLines($time, $line)
+    {
+        if (false !== $time) {
+            $date = new \DateTime($time);
+            $line = sprintf($line, $date->format('Y-m-d H:i:s'), $time);
+        }
+
+        $log = $this->parser->parse($line, 0);
+
+        $this->assertNotEmpty($log);
     }
 }
