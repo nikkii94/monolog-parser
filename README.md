@@ -1,4 +1,4 @@
-Monolog Parser
+Monolog Parser [![Build Status](https://travis-ci.org/ddtraceweb/monolog-parser.png?branch=master)](https://travis-ci.org/ddtraceweb/monolog-parser)
 ==============
 
 A simple library for parsing [monolog](https://github.com/Seldaek/monolog) logfiles.
