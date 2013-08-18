@@ -5,7 +5,7 @@ A simple library for parsing [monolog](https://github.com/Seldaek/monolog) logfi
 
 ## Installation
 
-You can install the library using [composer]('http://getcomposer.org/) by adding  `pulse00/monolog-parser` to your `composer.json`.
+You can install the library using [composer]('http://getcomposer.org/) by adding  `ddtraceweb/monolog-parser` to your `composer.json`.
 
 ## Usage
 
