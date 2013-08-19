@@ -68,3 +68,7 @@ You can install the library using [composer]('http://getcomposer.org/) by adding
 
 
 
+
+
+[![Bitdeli Badge](https://d2weczhvl823v0.cloudfront.net/ddtraceweb/monolog-parser/trend.png)](https://bitdeli.com/free "Bitdeli Badge")
+
