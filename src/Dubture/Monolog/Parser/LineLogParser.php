@@ -70,4 +70,18 @@ class LineLogParser implements LogParserInterface
             }
         }
     }
+
+    /**
+     * @param string $name
+     * @param string $pattern
+     *
+     * @throws \RuntimeException
+     */
+    public function registerPattern($name, $pattern){
+        if(!isset($this->pattern[$name])){
+            $this->pattern[$name] = $pattern;
+        }else{
+            throw new \RuntimeException("Pattern $name already exists");
+        }
+    }
 }
