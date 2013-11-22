@@ -61,6 +61,23 @@ class LogReader extends AbstractReader implements \Iterator, \ArrayAccess, \Coun
     }
 
     /**
+     * @return \Dubture\Monolog\Parser\LineLogParser|\Dubture\Monolog\Parser\LogParserInterface
+     */
+    public function getParser()
+    {
+        $p =  & $this->parser;
+        return $p;
+    }
+
+    /**
+     * @param string $pattern
+     */
+    public function setPattern( $pattern = 'default' )
+    {
+        $this->pattern = $pattern;
+    }
+
+    /**
      * {@inheritdoc}
      */
     public function offsetExists($offset)
