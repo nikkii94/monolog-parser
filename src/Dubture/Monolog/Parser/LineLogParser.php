@@ -77,10 +77,11 @@ class LineLogParser implements LogParserInterface
      *
      * @throws \RuntimeException
      */
-    public function registerPattern($name, $pattern){
-        if(!isset($this->pattern[$name])){
+    public function registerPattern($name, $pattern)
+    {
+        if (!isset($this->pattern[$name])) {
             $this->pattern[$name] = $pattern;
-        }else{
+        } else {
             throw new \RuntimeException("Pattern $name already exists");
         }
     }
