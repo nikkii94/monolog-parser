@@ -23,5 +23,6 @@ interface LogParserInterface
      * @param $pattern
      *
      * @return mixed
-     */function parse($log, $days, $pattern);
+     */
+    public function parse($log, $days, $pattern);
 }
