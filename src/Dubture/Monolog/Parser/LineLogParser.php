@@ -41,11 +41,15 @@ class LineLogParser implements LogParserInterface
 
         preg_match($this->pattern[$pattern], $log, $data);
 
+
+        $date=null;
         if (!isset($data['date'])) {
             return array();
+        }else{
+            $date=$data['date'];
+            $date=preg_replace("/([0-9]{4}-[0-9]{2}-[0-9]{2}).*([0-9]{2}:[0-9]{2}:[0-9]{2}).*/","$1 $2",$date);
+            $date=\DateTime::createFromFormat('Y-m-d H:i:s', $date);
         }
-
-        $date = \DateTime::createFromFormat('Y-m-d H:i:s', $data['date']);
 
         $array = array(
             'date'    => $date,
