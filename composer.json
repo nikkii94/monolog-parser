@@ -1,5 +1,5 @@
 {
-    "name": "ddtraceweb/monolog-parser",
+    "name": "davidmars/monolog-parser",
     "description": "A parser for monolog log entries",
     "require": {
         "monolog/monolog": "1.*"
