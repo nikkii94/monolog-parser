@@ -1,6 +1,6 @@
 {
-    "name": "ddtraceweb/monolog-parser",
-    "description": "A parser for monolog log entries",
+    "name": "davidmars/monolog-parser",
+    "description": "Monolog parser OOP oriented and date parsing improved",
     "require": {
         "monolog/monolog": "1.*"
     },
@@ -12,6 +12,10 @@
         {
             "name": "Robert Gruendler",
             "email": "r.gruendler@gmail.com"
+        },
+        {
+            "name": "David Marsalone",
+            "email": "d.marsalone@gmail.com"
         }
     ],
     "autoload": {
