@@ -2,7 +2,6 @@
     "name": "davidmars/monolog-parser",
     "description": "Monolog parser OOP oriented and date parsing improved",
     "require": {
-        "monolog/monolog": "1.*"
     },
     "require-dev": {
         "phpunit/phpunit": "3.7.*"
