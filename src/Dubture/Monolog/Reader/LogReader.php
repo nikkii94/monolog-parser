@@ -11,31 +11,27 @@
 
 namespace Dubture\Monolog\Reader;
 
-use Dubture\Monolog\Reader\AbstractReader;
+use ArrayAccess;
+use Countable;
+use Dubture\Monolog\Parser\LineLogParser;
+use Dubture\Monolog\Parser\LogParserInterface;
+use Iterator;
+use RuntimeException;
+use SplFileObject;
 
 /**
  * Class LogReader
+ *
  * @package Dubture\Monolog\Reader
  */
-class LogReader extends AbstractReader implements \Iterator, \ArrayAccess, \Countable
+class LogReader extends AbstractReader implements Iterator, ArrayAccess, Countable
 {
-    /**
-     * @var \SplFileObject
-     */
-    protected $file;
+    protected SplFileObject $file;
+    protected int $lineCount;
+    protected LogParserInterface|LineLogParser $parser;
 
-    /**
-     * @var integer
-     */
-    protected $lineCount;
-
-    /**
-     * @var \Dubture\Monolog\Parser\LogParserInterface
-     */
-    protected $parser;
-
-    public $days;
-    public $pattern;
+    public int $days;
+    public string $pattern;
 
 
     /**
@@ -45,8 +41,8 @@ class LogReader extends AbstractReader implements \Iterator, \ArrayAccess, \Coun
      */
     public function __construct($file, $days = 1, $pattern = 'default')
     {
-        $this->file = new \SplFileObject($file, 'r');
-        $i          = 0;
+        $this->file = new SplFileObject($file, 'r');
+        $i = 0;
         while (!$this->file->eof()) {
             $this->file->current();
             $this->file->next();
@@ -57,22 +53,23 @@ class LogReader extends AbstractReader implements \Iterator, \ArrayAccess, \Coun
         $this->pattern = $pattern;
 
         $this->lineCount = $i;
-        $this->parser    = $this->getDefaultParser($days, $pattern);
+        $this->parser = $this->getDefaultParser($days, $pattern);
     }
 
     /**
-     * @return \Dubture\Monolog\Parser\LineLogParser|\Dubture\Monolog\Parser\LogParserInterface
+     * @return LineLogParser|LogParserInterface
      */
     public function getParser()
     {
-        $p =  & $this->parser;
+        $p =  &$this->parser;
+
         return $p;
     }
 
     /**
      * @param string $pattern
      */
-    public function setPattern( $pattern = 'default' )
+    public function setPattern($pattern = 'default')
     {
         $this->pattern = $pattern;
     }
@@ -80,7 +77,7 @@ class LogReader extends AbstractReader implements \Iterator, \ArrayAccess, \Coun
     /**
      * {@inheritdoc}
      */
-    public function offsetExists($offset)
+    public function offsetExists($offset): bool
     {
         return $this->lineCount < $offset;
     }
@@ -88,7 +85,7 @@ class LogReader extends AbstractReader implements \Iterator, \ArrayAccess, \Coun
     /**
      * {@inheritdoc}
      */
-    public function offsetGet($offset)
+    public function offsetGet($offset): mixed
     {
         $key = $this->file->key();
         $this->file->seek($offset);
@@ -102,23 +99,23 @@ class LogReader extends AbstractReader implements \Iterator, \ArrayAccess, \Coun
     /**
      * {@inheritdoc}
      */
-    public function offsetSet($offset, $value)
+    public function offsetSet($offset, $value): void
     {
-        throw new \RuntimeException("LogReader is read-only.");
+        throw new RuntimeException("LogReader is read-only.");
     }
 
     /**
      * {@inheritdoc}
      */
-    public function offsetUnset($offset)
+    public function offsetUnset($offset): void
     {
-        throw new \RuntimeException("LogReader is read-only.");
+        throw new RuntimeException("LogReader is read-only.");
     }
 
     /**
      * {@inheritdoc}
      */
-    public function rewind()
+    public function rewind(): void
     {
         $this->file->rewind();
     }
@@ -126,7 +123,7 @@ class LogReader extends AbstractReader implements \Iterator, \ArrayAccess, \Coun
     /**
      * {@inheritdoc}
      */
-    public function next()
+    public function next(): void
     {
         $this->file->next();
     }
@@ -134,7 +131,7 @@ class LogReader extends AbstractReader implements \Iterator, \ArrayAccess, \Coun
     /**
      * {@inheritdoc}
      */
-    public function current()
+    public function current(): mixed
     {
         return $this->parser->parse($this->file->current(), $this->days, $this->pattern);
     }
@@ -142,7 +139,7 @@ class LogReader extends AbstractReader implements \Iterator, \ArrayAccess, \Coun
     /**
      * {@inheritdoc}
      */
-    public function key()
+    public function key(): mixed
     {
         return $this->file->key();
     }
@@ -150,7 +147,7 @@ class LogReader extends AbstractReader implements \Iterator, \ArrayAccess, \Coun
     /**
      * {@inheritdoc}
      */
-    public function valid()
+    public function valid(): bool
     {
         return $this->file->valid();
     }
@@ -158,7 +155,7 @@ class LogReader extends AbstractReader implements \Iterator, \ArrayAccess, \Coun
     /**
      * {@inheritdoc}
      */
-    public function count()
+    public function count(): int
     {
         return $this->lineCount;
     }
