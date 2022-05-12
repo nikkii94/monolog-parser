@@ -53,11 +53,11 @@ class LineLogParser implements LogParserInterface
 
         $array = array(
             'date'    => $date,
-            'logger'  => $data['logger'],
-            'level'   => $data['level'],
-            'message' => $data['message'],
-            'context' => json_decode($data['context'], true),
-            'extra'   => json_decode($data['extra'], true)
+            'logger'  => $data['logger'] ?? null,
+            'level'   => $data['level'] ?? null,
+            'message' => $data['message'] ?? null,
+            'context' => json_decode($data['context'] ?? '', true),
+            'extra'   => json_decode($data['extra'] ?? '', true)
         );
 
         if (0 === $days) {
